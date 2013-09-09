@@ -8,15 +8,59 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Date;
+
 import org.json.*;
 
 public class ServiceScanner
 {
+	//
+	public static final int QUIZZAPP_PORT = 8080;
+	
 	private String ip;
 	public String payload;
 	
+	public String findListeningServer()
+	{
+		String listeningServerIp = null;
+		this.ip = this.getIp();
+			
+		ArrayList<String> servers = this.serverList(ip);
+		
+		if (servers.size() > 0)
+		{
+			
+			for (int i = 0; i < servers.size(); i++)
+			{
+				String testIp = servers.get(i);
+				
+				boolean result = this.testPort(testIp, ServiceScanner.QUIZZAPP_PORT);
+				
+				//
+				if (result)
+				{
+					
+					//try and make a http connection to the host
+					boolean reachable = this.testUrl("http://" + testIp + ":" + ServiceScanner.QUIZZAPP_PORT + "/network/test");
+					
+					// we found a listening host
+					if (reachable)
+					{
+						listeningServerIp = testIp;
+						//
+						//System.out.println("usable host is: " + listeningServerIp);// + " (data: "+ scanner.payload + ")");
+						// break out of the loop
+						break;
+					}
+				}
+			}
+		}
+		
+		return listeningServerIp;
+	}
 	
-	public boolean testUrl(String testURL)
+	
+	private boolean testUrl(String testURL)
 	{
 		URL url;
 		try
@@ -46,13 +90,13 @@ public class ServiceScanner
         		try
         		{
         			JSONObject jsonPayload = new JSONObject(this.payload);
-        			System.out.println(jsonPayload.get("server"));
+        			//System.out.println(jsonPayload.get("quizzapp"));
         		} catch (JSONException je)
         		{
-        			System.out.println(je.getMessage());
+        			//System.out.println(je.getMessage());
         		} catch (Exception e)
         		{
-        			System.out.println(e.getMessage());
+        			//System.out.println(e.getMessage());
         		}
         		
         		return true;
@@ -83,7 +127,7 @@ public class ServiceScanner
 	 * 
 	 * @param ip
 	 */
-	public static ArrayList<String> serverList(String ip)
+	private ArrayList<String> serverList(String ip)
 	{
 	    ArrayList<String> servers = new ArrayList<String>();
 		
@@ -101,7 +145,12 @@ public class ServiceScanner
 	    return servers;
 	}
 	
-	public static String getIp()
+	/**
+	 * Resolves the client's IP address (we can then determinte the submet to scan)
+	 * 
+	 * @return
+	 */
+	public String getIp()
 	{
 		String ip = "UNKNOWN";
 		
@@ -132,7 +181,15 @@ public class ServiceScanner
 		return ip;
 	}
 	
-	public boolean testPort(String ip, int port)
+	
+	/**
+	 * Tests the port to see if it's reachable
+	 * 
+	 * @param ip
+	 * @param port
+	 * @return
+	 */
+	private boolean testPort(String ip, int port)
 	{
 		//System.out.println("Scanning " + ip + " on port " + port);
 		boolean reachable;
