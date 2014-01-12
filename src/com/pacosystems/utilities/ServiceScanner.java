@@ -16,6 +16,7 @@ import org.json.*;
 
 public class ServiceScanner
 {
+
 	// default port
 	public static final int QUIZZAPP_PORT = 8080;
 	
@@ -63,6 +64,7 @@ public class ServiceScanner
 	 * 
 	 * @return
 	 */
+
 	private String _findListeningServer(String ip)
 	{
 		String listeningServerIp = "";
@@ -106,12 +108,51 @@ public class ServiceScanner
 			System.out.println ("no ip was resolved!");
 		}
 		
-		
-		
 		return listeningServerIp;
 	}
+		
+		
+//	public String findListeningServer()
+//	{
+//		String listeningServerIp = null;
+//		this.ip = this.getIp();
+//			
+//		ArrayList<String> servers = this.serverList(ip);
+//		
+//		if (servers.size() > 0)
+//		{
+//			
+//			for (int i = 0; i < servers.size(); i++)
+//			{
+//				String testIp = servers.get(i);
+//				
+//				boolean result = this.testPort(testIp, ServiceScanner.QUIZZAPP_PORT);
+//				
+//				//
+//				if (result)
+//				{
+//					
+//					//try and make a http connection to the host
+//					boolean reachable = this.testUrl("http://" + testIp + ":" + ServiceScanner.QUIZZAPP_PORT + "/network/test");
+//					
+//					// we found a listening host
+//					if (reachable)
+//					{
+//						listeningServerIp = testIp;
+//						//
+//						//System.out.println("usable host is: " + listeningServerIp);// + " (data: "+ scanner.payload + ")");
+//						// break out of the loop
+//						break;
+//					}
+//				}
+//			}
+//		}
+//		
+//		return listeningServerIp;
+//	}
 	
 	
+
 	/**
 	 * Try and make a connection to the listener service - this will write the payload returned to this.payload
 	 * so it can be extracted later if required
@@ -211,6 +252,7 @@ public class ServiceScanner
 	 */
 	public String getIp()
 	{
+
 		String ip = "";
 		
 		// TODO Auto-generated method stub
@@ -261,6 +303,7 @@ public class ServiceScanner
 		catch (UnknownHostException e)
 		{
 			//System.out.println(ip + " is not a reachable host");
+
 		} catch (IOException e)
 		{
 			//e.printStackTrace();
